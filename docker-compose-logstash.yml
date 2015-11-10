@@ -1,0 +1,33 @@
+
+# the shipper will receive syslog log messages and send them to redis to queue them
+shipper:
+  image: logstash
+  volumes:
+    - ".:/config-dir"
+  command: logstash -f /config-dir/logstash-shipper.conf
+  ports:
+   - 1514:1514
+   - 1515:1515
+
+# the indexer will receive messages from the redis queue, process the messages and send them to elasticsearch to index
+indexer:
+  image: logstash
+  volumes:
+    - ".:/config-dir"
+  command: logstash -f /config-dir/logstash-indexer.conf
+
+# broker for logstash
+redis:
+  image: redis
+
+# search and analytics engine
+elasticsearch:
+  image: elasticsearch
+
+# visualize and explore the logs
+kibana:
+  image: kibana
+  environment:
+    - ELASTICSEARCH_URL=http://dockerlogginglogstashtest_elasticsearch_1.dockerlogginglogstashtest:9200
+  ports:
+    - 5601:5601

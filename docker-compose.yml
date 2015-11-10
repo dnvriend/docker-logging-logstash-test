@@ -1,0 +1,11 @@
+
+postgres:
+  image: postgres
+  container_name: postgres
+  environment:
+    - POSTGRES_PASSWORD=secret
+  log_driver: "syslog"
+  log_opt:
+    syslog-address: "tcp://$IP_ADDRESS_DEV_VM:1515"
+    tag: "postgres"
+
